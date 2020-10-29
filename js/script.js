@@ -1,33 +1,29 @@
-window.addEventListener('DOMContentLoaded', () => {
-
-    const tabs = document.querySelectorAll('.tabheader__item'),
-        tabsParent = document.querySelector('.tabheader__items'),
-        tabsContent = document.querySelectorAll('.tabcontent');
+window.addEventListener("DOMContentLoaded", () => {
+    const tabs = document.querySelectorAll(".tabheader__item"),
+        tabsParent = document.querySelector(".tabheader__items"),
+        tabsContent = document.querySelectorAll(".tabcontent");
 
     function hideTabContent() {
-        tabsContent.forEach(item => {
-            item.classList.add('hide');
-            item.classList.remove('show', 'fade');
+        tabsContent.forEach((item) => {
+            item.classList.add("hide");
+            item.classList.remove("show", "fade");
         });
 
-        tabs.forEach(item => {
-            item.classList.remove('tabheader__item_active');
+        tabs.forEach((item) => {
+            item.classList.remove("tabheader__item_active");
         });
     }
 
     function showTabContent(i = 0) {
-        tabsContent[i].classList.add('show', 'fade');
-        tabsContent[i].classList.remove('hide');
-        tabs[i].classList.add('tabheader__item_active');
+        tabsContent[i].classList.add("show", "fade");
+        tabsContent[i].classList.remove("hide");
+        tabs[i].classList.add("tabheader__item_active");
     }
 
-    hideTabContent();
-    showTabContent();
-
-    tabsParent.addEventListener('click', (event) => {
+    tabsParent.addEventListener("click", (event) => {
         const target = event.target;
 
-        if (target && target.classList.contains('tabheader__item')) {
+        if (target && target.classList.contains("tabheader__item")) {
             tabs.forEach((item, i) => {
                 if (target == item) {
                     hideTabContent();
@@ -35,6 +31,60 @@ window.addEventListener('DOMContentLoaded', () => {
                 }
             });
         }
-
     });
+
+    //!TIMER----------------------------------------------------------
+    const deadline = '2020-12-31';
+
+    function getTimeRemaining(endtime) {
+        const time = Date.parse(endtime) - Date.parse(new Date()),
+            day = Math.floor(time / (1000 * 60 * 60 * 24)),
+            hours = Math.floor(time / (1000 * 60 * 60) % 24),
+            minutes = Math.floor((time / 1000 / 60) % 60),
+            seconds = Math.floor((time / 1000) % 60);
+
+        return {
+            'total': time,
+            'day': day,
+            'hours': hours,
+            'minutes': minutes,
+            'seconds': seconds
+        };
+    }
+
+    function getZero(num) {
+        if (num >= 0 && num < 10) {
+            return `0${num}`;
+        } else {
+            return num;
+        }
+    }
+
+    function setTimer(selector, endTime) {
+        const timer = document.querySelector(selector),
+            day = timer.querySelector('#days'),
+            minutes = timer.querySelector('#minutes'),
+            hours = timer.querySelector('#hours'),
+            seconds = timer.querySelector('#seconds'),
+            timeInterval = setInterval(updateTimer, 1000);
+
+        updateTimer();
+
+        function updateTimer() {
+            const time = getTimeRemaining(endTime);
+            day.innerHTML = getZero(time.day);
+            hours.innerHTML = getZero(time.hours);
+            minutes.innerHTML = getZero(time.minutes);
+            seconds.innerHTML = getZero(time.seconds);
+
+            if (time.total <= 0) {
+                clearInterval(timeInterval);
+            }
+        }
+    }
+
+
+    hideTabContent();
+    showTabContent();
+    setTimer('.timer', deadline);
 });
