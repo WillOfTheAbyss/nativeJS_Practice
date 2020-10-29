@@ -1,7 +1,11 @@
 window.addEventListener("DOMContentLoaded", () => {
     const tabs = document.querySelectorAll(".tabheader__item"),
         tabsParent = document.querySelector(".tabheader__items"),
-        tabsContent = document.querySelectorAll(".tabcontent");
+        tabsContent = document.querySelectorAll(".tabcontent"),
+        modalBtn = document.querySelectorAll('[data-modal]'),
+        modal = document.querySelector('.modal'),
+        modalClose = document.querySelector('.modal__close');
+
 
     function hideTabContent() {
         tabsContent.forEach((item) => {
@@ -83,6 +87,34 @@ window.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    //!ModalWindow
+
+    function openCloseModalWindow() {
+        modal.classList.toggle('show');
+        if (modal.matches('.show')) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+    }
+
+    modal.addEventListener('click', (e) => {
+        if (e.target == modal) {
+            openCloseModalWindow();
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.code == 'Escape' && modal.matches('.show')) {
+            openCloseModalWindow();
+        }
+    });
+
+    document.addEventListener('click', e => {
+        if (e.target && e.target.matches('[data-modal]')) {
+            openCloseModalWindow();
+        }
+    });
 
     hideTabContent();
     showTabContent();
