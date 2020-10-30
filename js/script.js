@@ -2,9 +2,8 @@ window.addEventListener("DOMContentLoaded", () => {
     const tabs = document.querySelectorAll(".tabheader__item"),
         tabsParent = document.querySelector(".tabheader__items"),
         tabsContent = document.querySelectorAll(".tabcontent"),
-        modalBtn = document.querySelectorAll('[data-modal]'),
         modal = document.querySelector('.modal'),
-        modalClose = document.querySelector('.modal__close');
+        menuItem = document.querySelectorAll('.menu__item');
 
 
     function hideTabContent() {
@@ -116,7 +115,75 @@ window.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    //!MenuItem
+
+    class MenuItem {
+        constructor(src, alt, title, descr, cost, parentSelector) {
+            this.src = src;
+            this.alt = alt;
+            this.title = title;
+            this.descr = descr;
+            this.cost = cost;
+            this.parent = document.querySelector(parentSelector);
+            this.transfer = 80;
+            this.changeToUAH();
+        }
+
+        changeToUAH(cost) {
+            this.cost = this.cost * this.transfer;
+        }
+
+        render() {
+            const element = document.createElement('div');
+            element.innerHTML = `
+                <div class="menu__item">
+                    <img src=${this.src} alt=${this.alt}>
+                    <h3 class="menu__item-subtitle">${this.title}</h3>
+                    <div   div class="menu__item-descr">${this.descr}</div>
+                    <div class="menu__item-divider"></div>
+                    <div class="menu__item-price">
+                        <div class="menu__item-cost">Цена:</div>
+                        <div class="menu__item-total"><span>${this.cost}</span> грн/день</div>
+                    </div>
+                </div>`;
+
+            this.parent.append(element);
+        }
+    }
+
     hideTabContent();
     showTabContent();
+    new MenuItem(
+        "img/tabs/vegy.jpg",
+        "vegy",
+        'Меню "Фитнес"',
+        `Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих
+        овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной
+        ценой и высоким качеством!`,
+        9,
+        '.menu .container'
+    ).render();
+
+    new MenuItem(
+        "img/tabs/elite.jpg",
+        "elite",
+        'Меню “Премиум”',
+        `В меню “Премиум” мы используем не только красивый дизайн упаковки, но
+        и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода
+        в ресторан!`,
+        21,
+        '.menu .container'
+    ).render();
+
+    new MenuItem(
+        "img/tabs/post.jpg",
+        "post",
+        'Меню "Постное"',
+        `Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие
+        продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное
+        количество белков за счет тофу и импортных вегетарианских стейков.`,
+        14,
+        '.menu .container'
+    ).render();
     setTimer('.timer', deadline);
 });
