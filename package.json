@@ -1,0 +1,22 @@
+{
+  "name": "food_dist",
+  "version": "1.0.0",
+  "description": "practice",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WillOfTheAbyss/practiceSecond.git"
+  },
+  "author": "Ruslan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/WillOfTheAbyss/practiceSecond/issues"
+  },
+  "homepage": "https://github.com/WillOfTheAbyss/practiceSecond#readme",
+  "devDependencies": {
+    "json-server": "^0.16.2"
+  }
+}
