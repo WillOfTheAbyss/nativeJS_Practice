@@ -2,8 +2,12 @@ window.addEventListener("DOMContentLoaded", () => {
     const tabs = document.querySelectorAll(".tabheader__item"),
         tabsParent = document.querySelector(".tabheader__items"),
         tabsContent = document.querySelectorAll(".tabcontent"),
+        thankModal = document.createElement('div'),
         modal = document.querySelector('.modal'),
-        menuItem = document.querySelectorAll('.menu__item');
+        prevModalDialog = document.querySelector('.modal__dialog');
+
+    let timerToCloseThanks;
+
 
 
     function hideTabContent() {
@@ -95,6 +99,12 @@ window.addEventListener("DOMContentLoaded", () => {
         } else {
             document.body.style.overflow = '';
         }
+        if (modal.contains(thankModal)) {
+            console.log(23);
+            thankModal.remove();
+            prevModalDialog.classList.remove('hide');
+            clearTimeout(timerToCloseThanks);
+        }
     }
 
     modal.addEventListener('click', (e) => {
@@ -118,23 +128,31 @@ window.addEventListener("DOMContentLoaded", () => {
     //!MenuItem
 
     class MenuItem {
-        constructor(src, alt, title, descr, cost, parentSelector) {
+        constructor(src, alt, title, descr, cost, parentSelector, ...classes) {
             this.src = src;
             this.alt = alt;
             this.title = title;
             this.descr = descr;
             this.cost = cost;
+            this.classes = classes;
             this.parent = document.querySelector(parentSelector);
             this.transfer = 80;
             this.changeToUAH();
         }
 
-        changeToUAH(cost) {
+        changeToUAH() {
             this.cost = this.cost * this.transfer;
         }
 
         render() {
             const element = document.createElement('div');
+
+            if (this.classes.length === 0) {
+                element.classList.add('menu__item');
+            } else {
+                this.classes.forEach(className => element.classList.add(className));
+            }
+
             element.innerHTML = `
                 <div class="menu__item">
                     <img src=${this.src} alt=${this.alt}>
@@ -151,8 +169,82 @@ window.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    //!ServerForms
+
+    const forms = document.querySelectorAll('form');
+
+    const message = {
+        loading: 'img/form/spinner.svg',
+        success: 'Спасибо! Скоро мы с вами свяжемся',
+        failure: 'Что-то пошло не так...'
+    };
+
+    function postData(form) {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const statusMessage = document.createElement('img');
+            statusMessage.src = message.loading;
+            statusMessage.style.cssText = `
+                display: block;
+                margin: 0 auto;
+            `;
+            form.insertAdjacentElement('afterend', statusMessage);
+
+            const request = new XMLHttpRequest();
+            request.open('POST', 'server.php');
+
+            //? Для FormData не нужен заголовок, он создается автоматически
+            request.setRequestHeader('Content-type', 'application/json');
+
+            const formData = new FormData(form);
+
+            const obj = {};
+            formData.forEach((value, key) => {
+                obj[key] = value;
+            });
+
+            const json = JSON.stringify(obj);
+
+            request.send(json);
+
+            request.addEventListener('load', () => {
+                if (request.status === 200) {
+                    console.log(request.response);
+                    showThanksModal(message.success);
+                    form.reset();
+                    statusMessage.remove();
+                } else {
+                    showThanksModal(message.failure);
+                }
+            });
+
+        });
+    }
+
+    function showThanksModal(mess) {
+        prevModalDialog.classList.add('hide');
+        thankModal.classList.add('modal__dialog');
+        thankModal.innerHTML = `
+            <div class = "modal__content">
+                <div class = "modal__close" data-modal>×</div>
+                <div class = "modal__title">${mess}</div>
+            </div>
+        `;
+
+        document.querySelector('.modal').append(thankModal);
+        timerToCloseThanks = setTimeout(() => {
+            thankModal.remove();
+            prevModalDialog.classList.remove('hide');
+            if (modal.classList.contains('show')) {
+                openCloseModalWindow();
+            }
+        }, 4000);
+    }
+
     hideTabContent();
     showTabContent();
+    forms.forEach(item => postData(item));
     new MenuItem(
         "img/tabs/vegy.jpg",
         "vegy",
