@@ -59,7 +59,9 @@ function form(wrapper, modalWindow) {
         </div>`;
 
         modalWrapper.append(thankModal);
-
+        if (!modalWrapper.classList.contains("show")) {
+            openCloseModalWindow(modalWrapper);
+        }
         timerToCloseThanks = setTimeout(() => {
             thankModal.remove();
             modal.classList.remove("hide");
